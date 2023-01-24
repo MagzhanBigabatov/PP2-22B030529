@@ -26,3 +26,38 @@ y = 15
 
 print(bool(x))
 print(bool(y))
+
+#False Values
+bool(False)
+bool(None)
+bool(0)
+bool("")
+bool(())
+bool([])
+bool({})
+
+print()
+
+#Bool in class and func
+#example-1
+class myclass():
+    def __len__(self):
+        return 0
+
+myjob = myclass()
+print(bool(myjob))
+
+#example-2
+def myfunc():
+    return True
+
+print(myfunc())
+
+#example-3
+def myFunction() :
+  return True
+
+if myFunction():
+  print("YES!")
+else:
+  print("NO!")
