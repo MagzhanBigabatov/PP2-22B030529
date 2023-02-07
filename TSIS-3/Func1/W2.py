@@ -1,0 +1,6 @@
+print("from Fahrenheit to Centigrade")
+print("Please write temperature Fahrenheit")
+faren = float(input())
+centi = (5/9) * (faren-32)
+#print(int(gram))
+print(faren , "Fahrenheit is" , centi , "Centigrade")
