@@ -5,18 +5,18 @@ class BankAccount:
 
     def deposit(self, amount):
         self.balance += amount
-        print(f"Deposited ${amount}. New balance: ${self.balance}")
+        print(f"Deposited ${amount}. New balance: {self.balance}")
 
     def withdraw(self, amount):
         if amount > self.balance:
-            print(f"Withdrawal failed. Available balance: ${self.balance}")
+            print(f"Withdrawal failed. Available balance: {self.balance}")
         else:
             self.balance -= amount
-            print(f"Withdrew ${amount}. New balance: ${self.balance}")
+            print(f"Withdrew ${amount}. New balance: {self.balance}")
 
 
 account = BankAccount("Maghzan", 5000)
 
-account.deposit(5000)
+account.deposit(10000)
 account.withdraw(10000)
 account.withdraw(5000)

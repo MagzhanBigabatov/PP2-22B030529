@@ -84,4 +84,9 @@ def IMBD(movies):
         if movies[i]['imdb'] > 5.5:
             return True
 
-print(IMBD(movies))
+def IBDM(movies):
+    for i in range(len(movies)):
+        if  (movies[i]['imdb']> 5.0 and movies[i]['imdb'] < 7.0) or movies[i]['category'] == "Thriller":
+            print(movies[i]) 
+
+print(IBDM(movies))
