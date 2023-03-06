@@ -22,3 +22,5 @@ print()
 bday = datetime.datetime(2004, 7, 7, 14, 12, 50)
 x4 = x1-bday
 print(x4)
+
+
