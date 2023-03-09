@@ -2,8 +2,7 @@ import re
 
 #exercise-1
 txt1 = input("First: ")
-pattern1 = r'ab*'
-result1 = re.search(pattern1, txt1)
+result1 = re.search('ab*', txt1)
 if result1:
     #print(r)
     print("True")
@@ -12,8 +11,7 @@ else:
 
 #exercise-2
 txt2 = input("Second: ")
-pattern2 = r'a(b){2-3}'
-result2 = re.search(pattern2, txt2)
+result2 = re.search('ab{2}.{4}', txt2)
 if result2:
     print("True")
 else:
@@ -33,8 +31,7 @@ print(result4)
 
 #exercise-5
 txt5 = input("Fifth: ")
-pattern5 = r'a(.)*(b)'
-result5 = re.findall(pattern5, txt5)
+result5 = re.findall('[^a]+[b$]', txt5)
 if result5:
     print("True")
 else:
@@ -42,11 +39,10 @@ else:
 
 #exercise-6
 txt6 = input("Sixth: ")
-pattern6 = '[ ,.]'
-result6 = re.sub(pattern6, ":", txt6)
+result6 = re.sub('[ ,.]', ":", txt6)
 print(result6)
 
-#exercise-7
+#exercise-7 разделяет строку на лист по _, затем объединяет все
 list7 = list()
 txt7 = input("Seventh: ")
 pattern7 = re.split('_', txt7)
@@ -55,18 +51,18 @@ for i in pattern7:
 result7 = "".join(list7)
 print(result7)
 
-#exercise-8
+#exercise-8 #делит строки которые связаны с заглавной
 txt8 = input("Eighth: ")
 result8 = re.split('[A-Z]', txt8)
 print(result8)
 
-#exercise-9
+#exercise-9 #добовляет пробел к словам начинающеимся с заглавной
 txt9 = input("Nineth: ")
 pattern9 = re.findall('[A-Z][a-z]*', txt9)
 result9 = " ".join(pattern9)
 print(result9)
 
-#exercise-10
+#exercise-10 находит все строки у которых начало заглавная, затем объеденяет с _ и меняет заглавные на обычные 
 txt10 = input("Tenth: ")
 list10 = list()
 pattern10 = re.findall('[A-Z][a-z]*', txt10)
