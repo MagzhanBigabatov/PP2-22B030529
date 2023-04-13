@@ -98,6 +98,19 @@ class snake():
         if poison.pois.y != self.body[0].y :
             return False
         return True
+    def cheak_wall(self):
+        for i in self.body[1:]:
+            if i.x == self.body[0].x and i.y == self.body[0].y:
+                return True
+    
+class Wall:
+    def __init__(self, x, y):
+        self.location = Point(x,y)
+    def draw(self):
+        for i in range(0, height, block):
+            for j in range(0, width, block):
+                if i == 0 or j == 0 or i == height-block or j == width - block:
+                    pygame.draw.rect(screen, Black, pygame.rect(i, j ,block, block))
 
 #разделение на блоки
 def draw_grid():
@@ -162,8 +175,10 @@ while Game:
     screen.blit(fps, (400,0))
     screen.blit(Timer, (400,30))
 
-    
-    
+    #змея может укусить себя
+    if snakes.cheak_wall():
+        Game = False
+
     #взаимодействие с едой и ядом
     if snakes.collision1(food):
         snakes.body.append(Point(food.food.x, food.food.y))

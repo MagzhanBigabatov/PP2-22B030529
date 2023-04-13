@@ -1,8 +1,7 @@
 import pygame
 import random
 
-songs = ['[MV] ロキ _ Roki (English Rap Cover) - Calliope Mori.mp3',
-         'Valkyrie「今宵月の館にて」 _ 戌亥とこx星街すいせい(Cover).mp3',
+songs = ['【COVER】K_DA - VILLAIN【Moona Hoshinova.mp3','[MV] ロキ _ Roki (English Rap Cover) - Calliope Mori.mp3',
          'YOASOBI「怪物」_スターアニマル (ときのそら・星街すいせい・大空スバル・尾丸ポルカ・博衣こより・沙花叉クロヱ) cover.mp3']
 
 SONG_END = pygame.USEREVENT + 1
