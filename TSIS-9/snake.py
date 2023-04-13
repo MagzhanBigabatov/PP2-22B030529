@@ -18,7 +18,7 @@ pygame.init()
 #Font for text
 score_font = pygame.font.SysFont("Verdana", 30)
 Scores = 0
-Levels = 1
+Levels = 0
 
 #colors
 RED = (255, 0 , 0)
@@ -200,9 +200,11 @@ while Game:
         poisons.pois.y = random.randint(1,20)
         Scores-=1
         
-        if Scores%5!=0 and not (Levels <= 1):
+        if Scores%5>0 and Scores/Levels <= 5:
             Levels-=1
             FPS-=1
+        elif Scores%5<0:
+            Levels = 0
     
 
     pygame.display.update()
