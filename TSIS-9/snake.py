@@ -1,183 +1,194 @@
-import random
 import pygame
+import sys
+import random
+from pygame.locals import *
+import time
 
-pygame.init()
-WIDTH, HEIGHT = 800, 800
-SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
-RED = (255, 0, 0)
-BLACK = (0, 0, 0)
-BLUE = (0, 0, 255)
-WHITE = (255, 255, 255)
-GREEN = (0, 255, 0)
-BLOCK_SIZE = 40
+#screen sizes
+height = 630
+width = 630
+#block size
+block = 30
 
+#making game_mode
 clock = pygame.time.Clock()
+screen = pygame.display.set_mode((width, height))
+pygame.init()
 
+#Font for text
+score_font = pygame.font.SysFont("Verdana", 30)
+Scores = 0
+Levels = 1
 
+#colors
+RED = (255, 0 , 0)
+BLUE = (0, 0, 255)
+GREEN = (0, 255, 0)
+White = (255, 255, 255)
+Black = (0,0,0)
+
+#создание координат
 class Point:
     def __init__(self, x, y):
         self.x = x
         self.y = y
 
-
-class Snake:
+#making food
+class apple:
     def __init__(self):
-        self.body = [
-            Point(
-                x=WIDTH // BLOCK_SIZE // 2,
-                y=HEIGHT // BLOCK_SIZE // 2,
-            ),
-            #Point(
-            #    x=WIDTH // BLOCK_SIZE // 2 + 1,
-            #    y=HEIGHT // BLOCK_SIZE // 2,),
-       ]
-
+        self.food = Point(random.randint(1,20), random.randint(1,20))
     def draw(self):
-        head = self.body[0]
-        pygame.draw.rect(
-            SCREEN, RED,
-            pygame.Rect(head.x * BLOCK_SIZE,
-                        head.y * BLOCK_SIZE,
-                        BLOCK_SIZE, BLOCK_SIZE)
-        )
-        for body in self.body[1:]:
-            pygame.draw.rect(
-                SCREEN, BLUE,
-                pygame.Rect(body.x * BLOCK_SIZE,
-                            body.y * BLOCK_SIZE,
-                            BLOCK_SIZE, BLOCK_SIZE)
-            )
+        apple = self.food
+        rect = pygame.Rect(block*apple.x, block*apple.y, block, block)
+        pygame.draw.rect(screen, GREEN, rect)
+#making poison
+class poison():
+    def __init__(self):
+        self.pois = Point(random.randint(1,20), random.randint(1,20))
+    def draw(self):
+        poisons = self.pois
+        rect = pygame.Rect(block*poisons.x, block*poisons.y, block, block)
+        pygame.draw.rect(screen, Black, rect)
 
-    def move(self, dx, dy):
-        for idx in range(len(self.body) - 1, 0, -1):
-            self.body[idx].x = self.body[idx - 1].x
-            self.body[idx].y = self.body[idx - 1].y
-        self.body[0].x += dx
-        self.body[0].y += dy
+#making and controling snake
+class snake():
+    def __init__(self):
+        self.body = [Point(10,10)]
+        self.dx = 0
+        self.dy = 0
+    def draw(self):
+        snake = self.body[0]
+        rect = pygame.Rect(block*snake.x, block*snake.y, block, block)
+        pygame.draw.rect(screen, RED, rect)
 
-        if self.body[0].x > WIDTH // BLOCK_SIZE:
+        for snake in self.body[1:]:
+            rect = pygame.Rect(block*snake.x, block*snake.y, block,block)
+            pygame.draw.rect(screen, BLUE, rect)
+    def move(self):
+        #движение тела за головой
+        for i in range(len(self.body)-1,0,-1):
+            self.body[i].x = self.body[i-1].x
+            self.body[i].y = self.body[i-1].y
+        
+        #само движение
+        self.body[0].x += self.dx
+        self.body[0].y += self.dy
+
+        #перемешение если вышел за границу
+        if self.body[0].x *block > width:
             self.body[0].x = 0
-        elif self.body[0].x < 0:
-            self.body[0].x = WIDTH // BLOCK_SIZE
-        elif self.body[0].y < 0:
-            self.body[0].y = WIDTH // BLOCK_SIZE
-        elif self.body[0].y > HEIGHT // BLOCK_SIZE:
+        if self.body[0].y *block > height:
             self.body[0].y = 0
-
-    def check_collision(self, food):
-        if food.location.x != self.body[0].x:
+        if self.body[0].x < 0:
+            self.body[0].x = width / block
+        if self.body[0].y < 0:
+            self.body[0].y = height / block 
+    #взаимодействие с едой
+    def collision1(self, apple):
+        if apple.food.x != self.body[0].x:
             return False
-        if food.location.y != self.body[0].y:
+        if apple.food.y != self.body[0].y:
+            return False
+        return True
+    #взаимодействие с ядом
+    def collision2(self, poison):
+        global Game
+        if poison.pois.x != self.body[0].x:
+            return False
+        if poison.pois.y != self.body[0].y :
             return False
         return True
 
-    def check_wall(self):
-        for i in self.body[1:]:
-            if i.x == self.body[0].x and i.y == self.body[0].y:
-                return True
-
-
+#разделение на блоки
 def draw_grid():
-    for x in range(0, WIDTH, BLOCK_SIZE):
-        pygame.draw.line(SCREEN, BLACK, start_pos=(x, 0), end_pos=(x, HEIGHT), width=1)
-    for y in range(0, HEIGHT, BLOCK_SIZE):
-        pygame.draw.line(SCREEN, BLACK, start_pos=(0, y), end_pos=(WIDTH, y), width=1)
+    for x in range(0, width, block):
+        for y in range(0, height, block):
+            rect = pygame.Rect( x, y, block, block)
+            pygame.draw.rect(screen, Black, rect,1)
 
+#game settings
+snakes = snake()
+food = apple()
+poisons = poison()
+Game = True
+FPS = 5
+Addfood = pygame.USEREVENT + 1
+pygame.time.set_timer(Addfood, 10000)
 
-class Food:
-    def __init__(self, x, y):
-        self.location = Point(x, y)
+while Game:
 
-    def draw(self):
-        pygame.draw.rect(SCREEN, GREEN,
-                         pygame.Rect(
-                             self.location.x * BLOCK_SIZE,
-                             self.location.y * BLOCK_SIZE,
-                             BLOCK_SIZE, BLOCK_SIZE,
-                         ))
+    screen.fill(White)
+    
+    score = score_font.render(f" Your Score: {Scores}", True, (0,0,0))
+    level = score_font.render(f" Your Level: {Levels}", True, (0,0,0))
+    fps = score_font.render(f" FPS: {FPS}", True, (0,0,0))
+    
+    #timer 
+    ticks=pygame.time.get_ticks()
+    seconds=int(ticks/1000)
+    Timer = score_font.render(f" Time: {seconds}", True, (0,0,0))
+    
+    for event in pygame.event.get():
+        if event.type == QUIT:
+            pygame.quit()
+            sys.exit()
+        #меняет местоположение еды каждые 10с
+        if event.type == Addfood:
+            food.food.x = random.randint(1,20)
+            food.food.y = random.randint(1,20)
+        #проверка нажатия клавишь
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP:
+                snakes.dx = 0
+                snakes.dy = -1
+            if event.key == pygame.K_DOWN:
+                snakes.dx = 0
+                snakes.dy = 1
+            if event.key == pygame.K_LEFT:
+                snakes.dx = -1
+                snakes.dy = 0
+            if event.key == pygame.K_RIGHT:
+                snakes.dx = 1
+                snakes.dy = 0 
+    
+    #прорисовка всего
+    snakes.move()
+    draw_grid()
+    food.draw()
+    poisons.draw()
+    snakes.draw()
+    screen.blit(score, (0,0))
+    screen.blit(level, (0,30))
+    screen.blit(fps, (400,0))
+    screen.blit(Timer, (400,30))
 
+    
+    
+    #взаимодействие с едой и ядом
+    if snakes.collision1(food):
+        snakes.body.append(Point(food.food.x, food.food.y))
+        
+        food.food.x = random.randint(1,20)
+        food.food.y = random.randint(1,20)
+        Scores+=1
+        if Scores%5==0:
+            Levels +=1
+            FPS+=1
+        
+    if snakes.collision2(poisons):
+        if Scores == 0:
+            pygame.quit()
+            sys.exit()
+        snakes.body.pop(len(snakes.body[1:]))
 
-class Wall:
-    def __init__(self, x, y):
-        self.location = Point(x, y)
+        poisons.pois.x = random.randint(1,20)
+        poisons.pois.y = random.randint(1,20)
+        Scores-=1
+        
+        if Scores%5!=0 and not (Levels <= 1):
+            Levels-=1
+            FPS-=1
+    
 
-    def draw(self):
-        for i in range(0, HEIGHT, BLOCK_SIZE):
-            for j in range(0, WIDTH, BLOCK_SIZE):
-                if i == 0 or j == 0 or i == HEIGHT - BLOCK_SIZE or j == WIDTH - BLOCK_SIZE:
-                    pygame.draw.rect(SCREEN, BLACK,
-                                     pygame.Rect(
-                                         i,
-                                         j,
-                                         BLOCK_SIZE, BLOCK_SIZE,
-                                     ))
-
-
-def main():
-    running = True
-    snake = Snake()
-    food = Food(5, 5)
-    fps = 5
-    level = 1
-    score_font = pygame.font.SysFont("Verdana", 30)
-    dx, dy = 0, 0
-    score = 0
-    isDown = False
-
-    while running:
-        SCREEN.fill(WHITE)
-        score_text = score_font.render(f" Your score: {score}", True, (0, 0, 0))
-        level_text = score_font.render(f" Level: {level}", True, (0, 0, 0))
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_UP and not isDown:
-                    isUp = True
-                    isDown = False
-                    isRight = False
-                    isLeft = False
-                    dx, dy = 0, -1
-                elif event.key == pygame.K_DOWN and not isUp:
-                    dx, dy = 0, 1
-                    isUp = False
-                    isDown = True
-                    isRight = False
-                    isLeft = False
-                elif event.key == pygame.K_RIGHT and not isLeft:
-                    dx, dy = 1, 0
-                    isUp = False
-                    isDown = False
-                    isRight = True
-                    isLeft = False
-                elif event.key == pygame.K_LEFT and not isRight:
-                    dx, dy = -1, 0
-                    isUp = False
-                    isDown = False
-                    isRight = False
-                    isLeft = True
-
-        snake.move(dx, dy)
-        if snake.check_wall():
-            running = False
-        if snake.check_collision(food):
-            snake.body.append(Point(snake.body[-1].x, snake.body[-1].y))
-            food.location.x = random.randint(0, WIDTH // BLOCK_SIZE - 1)
-            food.location.y = random.randint(0, HEIGHT // BLOCK_SIZE - 1)
-            score += 1
-            if score % 5 == 0:
-                fps += 2
-                level += 1
-
-        snake.draw()
-        food.draw()
-        draw_grid()
-        SCREEN.blit(score_text, (0, 0))
-        SCREEN.blit(level_text, (0, 50))
-        pygame.display.flip()
-        clock.tick(fps)
-
-
-if __name__ == '__main__':
-    main()
+    pygame.display.update()
+    clock.tick(FPS) 
