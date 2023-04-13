@@ -1,7 +1,8 @@
 import pygame
 import random
 
-songs = ['【COVER】K_DA - VILLAIN【Moona Hoshinova.mp3','[MV] ロキ _ Roki (English Rap Cover) - Calliope Mori.mp3',
+songs = ['1.mp3',
+         '[MV] ロキ _ Roki (English Rap Cover) - Calliope Mori.mp3',
          'YOASOBI「怪物」_スターアニマル (ときのそら・星街すいせい・大空スバル・尾丸ポルカ・博衣こより・沙花叉クロヱ) cover.mp3']
 
 SONG_END = pygame.USEREVENT + 1
@@ -30,7 +31,7 @@ while running:
             elif event.key == pygame.K_LEFT:
                 pygame.mixer.music.stop()
                 i -= 1
-                if i < 0:
+                if i > 0 or i<0:
                     i = len(songs) - 1
                 playing_music(i)
         if event.type == SONG_END:
