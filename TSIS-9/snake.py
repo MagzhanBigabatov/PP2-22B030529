@@ -200,7 +200,7 @@ while Game:
         poisons.pois.y = random.randint(1,20)
         Scores-=1
         
-        if Scores%5>0 and Scores/Levels <= 5:
+        if Scores%5>0 and Scores%Levels <= 5:
             Levels-=1
             FPS-=1
         elif Scores%5<0:
